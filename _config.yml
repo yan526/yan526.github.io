@@ -1,3 +1,5 @@
    title: 我的个人博客
    description: 欢迎访问我的网站
-   theme: jekyll-theme-chirpy
+   remote_theme: just-the-docs/just-the-docs
+plugins:
+  - jekyll-remote-theme
