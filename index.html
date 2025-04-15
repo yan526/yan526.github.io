@@ -3,227 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberBlog | 未来科技</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>星辰小屋 - 个人博客</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #00f7ff;
-            --bg-color: #0a0a1a;
-            --glass-bg: rgba(10, 10, 26, 0.7);
-            --nav-width: 280px;
+            --primary: #6C5CE7;
+            --secondary: #A8A4FF;
+            --bg: #f8f9ff;
+            --text: #2d3436;
+            --card-bg: #ffffff;
+            --gap: 20px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #8475E9;
+            --secondary: #A8A4FF;
+            --bg: #1a1a1a;
+            --text: #f8f9ff;
+            --card-bg: #2d2d2d;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui;
         }
 
         body {
-            background: linear-gradient(45deg, #0a0a1a 30%, #1a1a3a);
-            color: #fff;
-            font-family: 'Segoe UI', system-ui;
-            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
         }
 
-        /* 赛博风格导航 */
-        .cyber-nav {
+        /* 浮动导航栏 */
+        .sidebar {
             position: fixed;
-            left: 0;
+            left: -260px;
             top: 0;
-            width: var(--nav-width);
+            width: 260px;
             height: 100vh;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border-right: 1px solid rgba(0, 247, 255, 0.2);
+            background: var(--card-bg);
+            padding: 20px;
+            z-index: 100;
+            transition: 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
 
-        .nav-header {
-            padding: 1rem 0;
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: 2rem;
+        .sidebar.active {
+            left: 0;
         }
 
+        /* 汉堡菜单 */
+        .menu-toggle {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle i {
+            color: white;
+            font-size: 24px;
+        }
+
+        /* 导航内容 */
         .logo {
-            font-size: 2rem;
-            background: linear-gradient(45deg, #00f7ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 5px #00f7ff);
+            text-align: center;
+            margin: 30px 0;
         }
 
-        .nav-menu {
+        .logo img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            padding: 3px;
+            object-fit: cover;
+        }
+
+        .nav-list {
             list-style: none;
         }
 
         .nav-item {
-            position: relative;
-            margin: 1rem 0;
-            padding: 1rem;
-            border-radius: 5px;
-            transition: all 0.3s ease;
+            margin: 12px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: 0.2s ease;
         }
 
+        .nav-item.active,
         .nav-item:hover {
-            background: rgba(0, 247, 255, 0.1);
-            transform: translateX(10px);
+            background: rgba(108, 92, 231, 0.1);
         }
 
-        .nav-item.active {
-            background: linear-gradient(90deg, #00f7ff22, transparent);
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .nav-link {
-            color: #fff;
+        .nav-item a {
+            color: var(--text);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            font-weight: 500;
         }
 
-        .nav-link i {
-            width: 25px;
-            color: var(--primary-color);
+        .nav-item i {
+            width: 30px;
+            font-size: 20px;
+            color: var(--primary);
         }
 
-        /* 主内容区 */
+        /* 主要内容区 */
         .main-content {
-            margin-left: var(--nav-width);
-            padding: 3rem;
+            padding: 80px 30px 30px;
+            min-height: 100vh;
         }
 
-        /* 赛博风格卡片 */
-        .cyber-card {
-            background: var(--glass-bg);
-            border: 1px solid rgba(0, 247, 255, 0.3);
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
+        /* 页面板块 */
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
         }
 
-        .cyber-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent, 
-                rgba(0, 247, 255, 0.1),
-                transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s;
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
         }
 
-        .cyber-card:hover {
-            transform: translateY(-5px);
+        .section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: var(--gap);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
         }
 
-        .cyber-card:hover::before {
-            animation: cyber-glow 2s linear infinite;
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
-        @keyframes cyber-glow {
-            0% { transform: rotate(45deg) translate(-10%, -10%); }
-            100% { transform: rotate(45deg) translate(10%, 10%); }
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+        }
+
+        .section-icon i {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            color: var(--text);
+        }
+
+        /* 文章卡片 */
+        .article-card {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            margin-bottom: var(--gap);
+            transition: 0.3s ease;
+            border: 1px solid rgba(108, 92, 231, 0.1);
+        }
+
+        .article-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.1);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .card-content h3 {
+            color: var(--text);
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .card-content p {
+            color: #666;
+            line-height: 1.6;
         }
 
         /* 响应式设计 */
-        @media (max-width: 768px) {
-            .cyber-nav {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 1000;
+        @media (min-width: 992px) {
+            .sidebar {
+                left: 0;
             }
-
-            .main-content {
-                margin-left: 0;
-            }
-
             .menu-toggle {
-                display: block;
-                position: fixed;
-                right: 1rem;
-                top: 1rem;
-                z-index: 999;
-                color: var(--primary-color);
-                font-size: 1.5rem;
-                cursor: pointer;
+                display: none;
             }
+            .main-content {
+                padding-left: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .article-card {
+                grid-template-columns: 1fr;
+            }
+            .card-image {
+                height: 200px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <nav class="cyber-nav">
-        <div class="nav-header">
-            <div class="logo">CYBERBLOG</div>
+    <!-- 汉堡菜单 -->
+    <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- 浮动导航栏 -->
+    <nav class="sidebar">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" width="120" height="60">
+              <!-- 背景椭圆 -->
+              <defs>
+                <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#8A2BE2" />
+                  <stop offset="100%" stop-color="#4B0082" />
+                </linearGradient>
+              </defs>
+              
+              <!-- 主椭圆 -->
+              <ellipse cx="60" cy="30" rx="58" ry="28" fill="transparent" stroke="url(#logoGrad)" stroke-width="2" />
+              
+              <!-- 星星装饰 -->
+              <circle cx="25" cy="20" r="1.2" fill="white" />
+              <circle cx="40" cy="15" r="0.8" fill="white" />
+              <circle cx="55" cy="12" r="1" fill="white" />
+              <circle cx="85" cy="18" r="1.2" fill="white" />
+              <circle cx="100" cy="25" r="0.9" fill="white" />
+              <circle cx="30" cy="40" r="1" fill="white" />
+              <circle cx="75" cy="45" r="0.8" fill="white" />
+              <circle cx="95" cy="38" r="1.1" fill="white" />
+              
+              <!-- 闪烁星星 -->
+              <circle cx="70" cy="20" r="1.5" fill="white">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="45" cy="42" r="1.3" fill="white">
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2.5s" repeatCount="indefinite" />
+              </circle>
+              
+              <!-- 文字 -->
+              <text x="60" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#9370DB">星辰小屋</text>
+            </svg>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item active">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-terminal"></i>
-                    <span>最新文章</span>
-                </a>
+        
+        <ul class="nav-list">
+            <li class="nav-item active" data-page="home">
+                <a href="#"><i class="fas fa-home"></i>首页</a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-code"></i>
-                    <span>技术栈</span>
-                </a>
+            <li class="nav-item" data-page="blog">
+                <a href="#"><i class="fas fa-feather"></i>技术文章</a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-project-diagram"></i>
-                    <span>项目展示</span>
-                </a>
+            <li class="nav-item" data-page="projects">
+                <a href="#"><i class="fas fa-code"></i>项目作品</a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-user-astronaut"></i>
-                    <span>关于作者</span>
-                </a>
+            <li class="nav-item" data-page="about">
+                <a href="#"><i class="fas fa-user-astronaut"></i>关于作者</a>
             </li>
         </ul>
     </nav>
 
-    <div class="main-content">
-        <!-- 文章卡片 -->
-        <article class="cyber-card">
-            <h2>探索Web3.0的新世界</h2>
-            <div class="article-meta">
-                <span>2023年10月20日</span>
-                <span>•</span>
-                <span>区块链技术</span>
-            </div>
-            <p>在去中心化的浪潮中，Web3.0正在重新定义互联网的边界。本文将从智能合约、DAO组织到分布式存储，全面解析下一代互联网技术...</p>
-        </article>
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div id="home" class="page active">
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2 class="section-title">最新动态</h2>
+                </div>
+                
+                <div class="article-card">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" class="card-image">
+                    <div class="card-content">
+                        <h3>前端开发趋势分析</h3>
+                        <p>深度解读2025年Web开发领域的新技术与实践方向，包含React生态、TypeScript应用和性能优化策略。</p>
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" class="card-image">
+                    <div class="card-content">
+                        <h3>2025年技术发展趋势</h3>
+                        <p>探索2025年AI生成式模型、Web3.0应用、量子计算、可持续技术和混合现实领域的突破性进展与实用落地方案。</p>
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" class="card-image">
+                    <div class="card-content">
+                        <h3>元宇宙开发实践指南</h3>
+                        <p>2025年元宇宙技术栈全面解析，从空间计算、沉浸式体验到分布式身份系统，提供开发者入门到进阶的实战案例。</p>
+                    </div>
+                </div>
+            </section>
+        </div>
 
-        <article class="cyber-card">
-            <h2>神经网络的可视化实践</h2>
-            <div class="article-meta">
-                <span>2023年10月18日</span>
-                <span>•</span>
-                <span>人工智能</span>
-            </div>
-            <p>使用TensorFlow.js和Three.js构建交互式神经网络可视化工具，探索深度学习模型的黑箱奥秘...</p>
-        </article>
-    </div>
+        <!-- 技术文章 -->
+        <div id="blog" class="page">
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h2 class="section-title">技术专栏</h2>
+                </div>
+                
+                <div class="article-card">
+                    <img src="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" class="card-image">
+                    <div class="card-content">
+                        <h3>React Hooks深度实践</h3>
+                        <p>2025年React最新Hooks范式解析，通过实际案例讲解如何高效使用自定义Hook管理复杂状态逻辑，提升组件复用性和可维护性。</p>
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" class="card-image">
+                    <div class="card-content">
+                        <h3>2025年AI模型微调技术</h3>
+                        <p>最新AI模型微调方法解析，包括少样本学习、差分隐私保护和领域自适应技术，提高模型在特定场景下的精确度和效率。</p>
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" class="card-image">
+                    <div class="card-content">
+                        <h3>去中心化应用开发框架对比</h3>
+                        <p>2025年主流Web3开发框架全面对比，分析以太坊、Solana和Polkadot生态系统的开发效率、性能和安全性差异。</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 其他页面内容类似，此处省略... -->
+    </main>
 
     <script>
-        // 移动端菜单切换
-        const menuToggle = document.createElement('i');
-        menuToggle.className = 'menu-toggle fas fa-bars';
-        document.body.appendChild(menuToggle);
+        // 导航栏交互
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page');
 
+        // 菜单切换
         menuToggle.addEventListener('click', () => {
-            document.querySelector('.cyber-nav').style.transform = 'translateX(0)';
+            sidebar.classList.toggle('active');
         });
+
+        // 页面切换
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const pageId = this.dataset.page;
+                
+                // 更新导航状态
+                navItems.forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 切换页面
+                pages.forEach(p => p.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                
+                // 移动端自动关闭导航栏
+                if(window.innerWidth < 992) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // 点击外部关闭导航（移动端）
+        document.addEventListener('click', (e) => {
+            if(!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // 自动主题检测
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        if(prefersDark.matches) {
+            document.body.dataset.theme = 'dark';
+        }
     </script>
 </body>
 </html>
